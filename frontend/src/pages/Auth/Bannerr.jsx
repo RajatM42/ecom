@@ -16,12 +16,13 @@ const Bannerr = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 2500,
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
     autoplay: true,
     autoplaySpeed: 3000,
+    pauseOnHover: false, // Disable pause on hover
   };
 
   return (
