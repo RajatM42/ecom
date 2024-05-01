@@ -4,7 +4,6 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Header from "../components/Header";
 import Product from "./Products/Product";
-import Bannerr from "./Auth/Bannerr";
 
 const Home = () => {
   const { keyword } = useParams();
@@ -12,7 +11,6 @@ const Home = () => {
 
   return (
     <>
-      <Bannerr />
       {!keyword ? <Header /> : null}
       {isLoading ? (
         <Loader />

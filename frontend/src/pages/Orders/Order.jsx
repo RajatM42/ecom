@@ -183,7 +183,7 @@ const Order = () => {
           <span>₹ {order.shippingPrice}</span>
         </div>
         <div className="flex justify-between mb-2">
-          <span>GST</span>
+          <span>Tax</span>
           <span>₹ {order.taxPrice}</span>
         </div>
         <div className="flex justify-between mb-2">

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 body {
-  background: black;
-  color: white;
+  background: #0f0f10;
+  color: #fff;
 }
 
 input,
