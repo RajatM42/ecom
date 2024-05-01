@@ -4,6 +4,7 @@ import Ratings from "./Ratings";
 import { useGetTopProductsQuery } from "../../redux/api/productApiSlice";
 import SmallProduct from "./SmallProduct";
 import Loader from "../../components/Loader";
+import './CSS/ProductTabs.css'
 
 const ProductTabs = ({
   loadingProductReview,
@@ -28,7 +29,7 @@ const ProductTabs = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row" id="ptabs">
       <section className="mr-[5rem]">
         <div
           className={`flex-1 p-4 cursor-pointer text-lg ${

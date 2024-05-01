@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetFilteredProductsQuery } from "../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../redux/api/categoryApiSlice";
+import './Shop.css';
 
 import {
   setCategories,
@@ -19,6 +20,7 @@ const Shop = () => {
 
   const categoriesQuery = useFetchCategoriesQuery();
   const [priceFilter, setPriceFilter] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const filteredProductsQuery = useGetFilteredProductsQuery({
     checked,
@@ -34,21 +36,28 @@ const Shop = () => {
   useEffect(() => {
     if (!checked.length || !radio.length) {
       if (!filteredProductsQuery.isLoading) {
-        // Filter products based on both checked categories and price filter
-        const filteredProducts = filteredProductsQuery.data.filter(
+        // Set all products initially
+        dispatch(setProducts(filteredProductsQuery.data));
+      }
+    }
+  }, [checked, radio, filteredProductsQuery.data, dispatch]);
+
+  useEffect(() => {
+    if (priceFilter !== "") {
+      if (!filteredProductsQuery.isLoading) {
+        // Filter products based only on the price filter
+        const filteredByPrice = filteredProductsQuery.data.filter(
           (product) => {
-            // Check if the product price includes the entered price filter value
-            return (
-              product.price.toString().includes(priceFilter) ||
-              product.price === parseInt(priceFilter, 10)
-            );
+            // Check if the product price is less than or equal to the entered price filter value
+            return product.price <= parseFloat(priceFilter);
           }
         );
 
-        dispatch(setProducts(filteredProducts));
+        // Update the filtered products state
+        setFilteredProducts(filteredByPrice);
       }
     }
-  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter]);
+  }, [priceFilter, filteredProductsQuery.data]);
 
   const handleBrandClick = (brand) => {
     const productsByBrand = filteredProductsQuery.data?.filter(
@@ -82,7 +91,7 @@ const Shop = () => {
 
   return (
     <>
-      <div className="container mx-auto">
+      <div className="container mx-auto" id="fbar">
         <div className="flex md:flex-row">
           <div className="bg-[#151515] p-3 mt-2 mb-2">
             <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
@@ -139,7 +148,7 @@ const Shop = () => {
             </div>
 
             <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filer by Price
+              Filter by Price
             </h2>
 
             <div className="p-5 w-[15rem]">
@@ -155,7 +164,7 @@ const Shop = () => {
             <div className="p-5 pt-0">
               <button
                 className="w-full border my-4"
-                onClick={() => window.location.reload()}
+                onClick={() => setPriceFilter("")}
               >
                 Reset
               </button>
@@ -163,16 +172,38 @@ const Shop = () => {
           </div>
 
           <div className="p-3">
-            <h2 className="h4 text-center mb-2">{products?.length} Products</h2>
+            <h2 className="h4 text-center mb-2">
+              {priceFilter === "" ? products?.length : filteredProducts.length} Products
+            </h2>
             <div className="flex flex-wrap justify-center">
-              {products.length === 0 ? (
-                <Loader />
+              {priceFilter === "" ? (
+                products?.length === 0 ? (
+                  <Loader />
+                ) : (
+                  products?.map((p) => (
+                    <div
+                      className="p-3"
+                      key={p._id}
+                      style={{ flex: "0 0 25%" }}
+                    >
+                      <ProductCard p={p} />
+                    </div>
+                  ))
+                )
               ) : (
-                products?.map((p) => (
-                  <div className="p-3" key={p._id} style={{ flex: "0 0 25%" }}>
-                    <ProductCard p={p} />
-                  </div>
-                ))
+                filteredProducts?.length === 0 ? (
+                  <Loader />
+                ) : (
+                  filteredProducts?.map((p) => (
+                    <div
+                      className="p-3"
+                      key={p._id}
+                      style={{ flex: "0 0 25%" }}
+                    >
+                      <ProductCard p={p} />
+                    </div>
+                  ))
+                )
               )}
             </div>
           </div>
